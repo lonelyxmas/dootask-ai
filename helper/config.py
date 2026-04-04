@@ -89,10 +89,9 @@ DEFAULT_MODELS = {
         {"id": "qwen-turbo", "name": "Qwen Turbo", "support_mcp": True, "support_vision": False},
     ],
     "wenxin": [
-        {"id": "ERNIE-4.0-8K-Latest", "name": "ERNIE 4.0 8K", "support_mcp": True, "support_vision": False},
-        {"id": "ERNIE-4.0-Turbo-8K-Latest", "name": "ERNIE 4.0 Turbo 8K", "support_mcp": True, "support_vision": False},
-        {"id": "ERNIE-3.5-8K", "name": "ERNIE 3.5 8K", "support_mcp": False, "support_vision": False},
-        {"id": "ERNIE-Speed-8K", "name": "ERNIE Speed 8K", "support_mcp": False, "support_vision": False},
+        {"id": "ernie-5.0-thinking-preview", "name": "ERNIE 5.0 Thinking", "support_mcp": False, "support_vision": True},
+        {"id": "ernie-4.5-turbo-128k", "name": "ERNIE 4.5 Turbo 128K", "support_mcp": False, "support_vision": False},
+        {"id": "ernie-4.5-turbo-vl-32k", "name": "ERNIE 4.5 Turbo VL 32K", "support_mcp": False, "support_vision": True},
     ],
 }
 
@@ -147,6 +146,9 @@ CONTEXT_LIMITS = {
         "default": 32000,
     },
     "wenxin": {
-        "default": 8000,
+        "ernie-5.0-thinking-preview": 128000,
+        "ernie-4.5-turbo-128k": 128000,
+        "ernie-4.5-turbo-vl-32k": 32000,
+        "default": 32000,
     },
 }

@@ -211,12 +211,12 @@ const createAiList = (lang: Language): Record<AIBotKey, BotConfig> => {
       extraFields: [
         {
           prop: "key",
-          placeholder: isZh ? "文心一言 API Key" : "ERNIE Bot API Key",
-          link: "https://console.bce.baidu.com/ai/#/ai/wenxinworkshop/overview/index",
+          placeholder: isZh ? "百度智能云千帆 API Key" : "Baidu Qianfan API Key",
+          link: "https://cloud.baidu.com/doc/qianfan/s/Kmh4sutww",
         },
         {
           prop: "models",
-          link: "https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Wm9cvy6rl",
+          link: "https://cloud.baidu.com/doc/qianfan/s/rmh4stp0j",
         },
       ],
     },

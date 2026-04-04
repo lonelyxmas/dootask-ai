@@ -7,7 +7,6 @@ from langchain_deepseek import ChatDeepSeek
 from langchain_community.chat_models import (
     ChatZhipuAI,
     ChatTongyi,
-    QianfanChatEndpoint,
     ChatCohere
 )
 from .request import RequestClient
@@ -81,7 +80,10 @@ def get_model_instance(model_type, model_name, api_key, **kwargs):
         "deepseek": (ChatDeepSeek, None),
         "zhipu": (ChatZhipuAI, None),
         "qwen": (ChatTongyi, None),
-        "wenxin": (QianfanChatEndpoint, None),
+        "wenxin": (ChatOpenAI, {
+            "openai_api_key": api_key,
+            "base_url": "https://qianfan.baidubce.com/v2",
+        }),
         "cohere": (ChatCohere, None),
         "ollama": (ChatOllama, None),
         "grok": (ChatXAI, None),
@@ -100,9 +102,6 @@ def get_model_instance(model_type, model_name, api_key, **kwargs):
             config = {
                 "api_key": api_key,
             }
-            if model_type == "wenxin":
-                api_key, secret_key = (api_key.split(':') + [None])[:2]
-                config.update({"api_key": api_key, "secret_key": secret_key})
 
         if base_url:
             if model_type == "deepseek":
