@@ -69,7 +69,10 @@ def get_model_instance(model_type, model_name, api_key, **kwargs):
                 config.update({"api_key": api_key, "secret_key": secret_key})
 
         if base_url:
-            config.update({"base_url": base_url})
+            if model_type == "deepseek":
+                config.update({"api_base": base_url})
+            else:
+                config.update({"base_url": base_url})
 
         if max_tokens > 0:
             config.update({"max_tokens": max_tokens})
