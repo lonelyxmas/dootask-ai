@@ -50,7 +50,9 @@ export const MCPListCard = ({
           </div>
         ) : (
           <div className="divide-y mt-1">
-            {mcps.map((mcp) => (
+            {mcps.map((mcp) => {
+              const filtered = mcp.supportedModels.filter((m) => availableModelIds.has(m.id))
+              return (
               <div
                 key={mcp.id}
                 className="flex items-start justify-between py-3 first:pt-0 last:pb-0"
@@ -63,28 +65,25 @@ export const MCPListCard = ({
                       {mcp.enabled ? t("mcp.statusEnabled") : t("mcp.statusDisabled")}
                     </Badge>
                   </div>
-                  {(() => {
-                    const filtered = mcp.supportedModels.filter((m) => availableModelIds.has(m.id))
-                    return filtered.length > 0 && (
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm text-muted-foreground">{t("mcp.supportedModels")}:</span>
-                        {filtered.slice(0, 3).map((model) => (
-                          <Badge
-                            key={model.id}
-                            variant="outline"
-                            className="text-xs"
-                          >
-                            {model.name}
-                          </Badge>
-                        ))}
-                        {filtered.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{filtered.length - 3}
-                          </Badge>
-                        )}
-                      </div>
-                    )
-                  })()}
+                  {filtered.length > 0 && (
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-sm text-muted-foreground">{t("mcp.supportedModels")}:</span>
+                      {filtered.slice(0, 3).map((model) => (
+                        <Badge
+                          key={model.id}
+                          variant="outline"
+                          className="text-xs"
+                        >
+                          {model.name}
+                        </Badge>
+                      ))}
+                      {filtered.length > 3 && (
+                        <Badge variant="outline" className="text-xs">
+                          +{filtered.length - 3}
+                        </Badge>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center gap-1 ml-4">
                   <Button
@@ -106,7 +105,8 @@ export const MCPListCard = ({
                   )}
                 </div>
               </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </CardContent>

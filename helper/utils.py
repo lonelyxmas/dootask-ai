@@ -20,35 +20,37 @@ import re
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 
+class _DictWithModelDump(dict):
+    """Dict subclass that provides model_dump() for langchain-anthropic compat."""
+    def model_dump(self, **kw):
+        return dict(self)
+
+
 def _patch_anthropic_model_dump_bug():
     """Patch langchain-anthropic bug where context_management/container may be
     plain dicts (e.g. via API gateways) but .model_dump() is called on them."""
+    if getattr(ChatAnthropic, '_model_dump_patched', False):
+        return
     original = ChatAnthropic._make_message_chunk_from_anthropic_event
 
     def patched(self, event, **kwargs):
-        # Temporarily patch objects that might be plain dicts
         ctx = getattr(event, "context_management", None)
         if ctx is not None and isinstance(ctx, dict):
-            class _DictProxy(dict):
-                def model_dump(self, **kw):
-                    return dict(self)
-            object.__setattr__(event, "context_management", _DictProxy(ctx))
+            object.__setattr__(event, "context_management", _DictWithModelDump(ctx))
 
         delta = getattr(event, "delta", None)
         if delta is not None:
             container = getattr(delta, "container", None)
             if container is not None and isinstance(container, dict):
-                class _DictProxyJson(dict):
-                    def model_dump(self, **kw):
-                        return dict(self)
                 try:
-                    object.__setattr__(delta, "container", _DictProxyJson(container))
+                    object.__setattr__(delta, "container", _DictWithModelDump(container))
                 except (AttributeError, TypeError):
                     pass
 
         return original(self, event, **kwargs)
 
     ChatAnthropic._make_message_chunk_from_anthropic_event = patched
+    ChatAnthropic._model_dump_patched = True
 
 
 _patch_anthropic_model_dump_bug()
