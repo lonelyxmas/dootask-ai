@@ -85,8 +85,8 @@ DEFAULT_MODELS = {
     ],
     "qianwen": [
         {"id": "qwen3-max", "name": "Qwen3 Max", "support_mcp": True, "support_vision": False},
-        {"id": "qwen3-plus", "name": "Qwen3 Plus", "support_mcp": True, "support_vision": True},
-        {"id": "qwen3-flash", "name": "Qwen3 Flash", "support_mcp": True, "support_vision": False},
+        {"id": "qwen-plus", "name": "Qwen Plus", "support_mcp": True, "support_vision": False},
+        {"id": "qwen-turbo", "name": "Qwen Turbo", "support_mcp": True, "support_vision": False},
     ],
     "wenxin": [
         {"id": "ernie-5.0", "name": "Ernie 5.0", "support_mcp": True, "support_vision": True},
@@ -141,9 +141,9 @@ CONTEXT_LIMITS = {
     },
     "qianwen": {
         "qwen3-max": 128000,
-        "qwen3-plus": 1000000,
-        "qwen3-flash": 128000,
-        "default": 128000,
+        "qwen-plus": 32000,
+        "qwen-turbo": 32000,
+        "default": 32000,
     },
     "wenxin": {
         "ernie-5.0": 128000,

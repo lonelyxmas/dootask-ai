@@ -125,7 +125,7 @@ def get_model_instance(model_type, model_name, api_key, **kwargs):
                 if gpt_major is not None and gpt_major >= 5 and "-chat" not in name_lower:
                     reasoning_effort = "medium" if "pro" in name_lower else "low"
                     config.update({"reasoning_effort": reasoning_effort})
-        else:
+        elif model_type in ("claude", "deepseek"):
             if thinking > 0:
                 config.update({"thinking": {"type": "enabled", "budget_tokens": 2000 if thinking == 1 else thinking}})
 
