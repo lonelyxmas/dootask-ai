@@ -19,6 +19,40 @@ import json
 import re
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
+
+def _patch_anthropic_model_dump_bug():
+    """Patch langchain-anthropic bug where context_management/container may be
+    plain dicts (e.g. via API gateways) but .model_dump() is called on them."""
+    original = ChatAnthropic._make_message_chunk_from_anthropic_event
+
+    def patched(self, event, **kwargs):
+        # Temporarily patch objects that might be plain dicts
+        ctx = getattr(event, "context_management", None)
+        if ctx is not None and isinstance(ctx, dict):
+            class _DictProxy(dict):
+                def model_dump(self, **kw):
+                    return dict(self)
+            object.__setattr__(event, "context_management", _DictProxy(ctx))
+
+        delta = getattr(event, "delta", None)
+        if delta is not None:
+            container = getattr(delta, "container", None)
+            if container is not None and isinstance(container, dict):
+                class _DictProxyJson(dict):
+                    def model_dump(self, **kw):
+                        return dict(self)
+                try:
+                    object.__setattr__(delta, "container", _DictProxyJson(container))
+                except (AttributeError, TypeError):
+                    pass
+
+        return original(self, event, **kwargs)
+
+    ChatAnthropic._make_message_chunk_from_anthropic_event = patched
+
+
+_patch_anthropic_model_dump_bug()
+
 def get_model_instance(model_type, model_name, api_key, **kwargs):
     """根据模型类型返回对应的模型实例"""
 
