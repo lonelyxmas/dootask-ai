@@ -2,19 +2,24 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import type { AIBotItem } from "@/data/aibots"
 import type { VisionConfig } from "@/data/vision-config"
 import { Eye, Settings } from "lucide-react"
 
 interface VisionConfigCardProps {
   config: VisionConfig
+  bots: AIBotItem[]
   onEdit: () => void
   t: (key: string) => string
 }
 
-export function VisionConfigCard({ config, onEdit, t }: VisionConfigCardProps) {
-  const modelCount = config.supportedModels.length
-  const displayModels = config.supportedModels.slice(0, 3)
-  const extraCount = modelCount - 3
+export function VisionConfigCard({ config, bots, onEdit, t }: VisionConfigCardProps) {
+  const availableModelIds = new Set(
+    bots.flatMap((bot) => bot.models?.map((m) => m.value) ?? [])
+  )
+  const filtered = config.supportedModels.filter((m) => availableModelIds.has(m.id))
+  const displayModels = filtered.slice(0, 3)
+  const extraCount = filtered.length - 3
 
   return (
     <Card>
@@ -38,7 +43,7 @@ export function VisionConfigCard({ config, onEdit, t }: VisionConfigCardProps) {
             {config.enabled ? t("vision.statusEnabled") : t("vision.statusDisabled")}
           </Badge>
         </div>
-        {modelCount > 0 && (
+        {filtered.length > 0 && (
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm text-muted-foreground">{t("vision.supportedModels")}:</span>
             {displayModels.map((model) => (

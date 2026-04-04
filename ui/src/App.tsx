@@ -590,6 +590,7 @@ function App() {
             />
             <VisionConfigCard
               config={visionConfig}
+              bots={bots}
               onEdit={handleEditVision}
               t={t}
             />

@@ -16,11 +16,15 @@ export interface MCPListCardProps {
 
 export const MCPListCard = ({
   mcps,
+  bots,
   onEdit,
   onDelete,
   onAdd,
 }: MCPListCardProps) => {
   const { t } = useI18n()
+  const availableModelIds = new Set(
+    bots.flatMap((bot) => bot.models?.map((m) => m.value) ?? [])
+  )
 
   return (
     <Card className="w-full">
@@ -59,25 +63,28 @@ export const MCPListCard = ({
                       {mcp.enabled ? t("mcp.statusEnabled") : t("mcp.statusDisabled")}
                     </Badge>
                   </div>
-                  {mcp.supportedModels.length > 0 && (
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm text-muted-foreground">{t("mcp.supportedModels")}:</span>
-                      {mcp.supportedModels.slice(0, 3).map((model) => (
-                        <Badge
-                          key={model.id}
-                          variant="outline"
-                          className="text-xs"
-                        >
-                          {model.name}
-                        </Badge>
-                      ))}
-                      {mcp.supportedModels.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{mcp.supportedModels.length - 3}
-                        </Badge>
-                      )}
-                    </div>
-                  )}
+                  {(() => {
+                    const filtered = mcp.supportedModels.filter((m) => availableModelIds.has(m.id))
+                    return filtered.length > 0 && (
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm text-muted-foreground">{t("mcp.supportedModels")}:</span>
+                        {filtered.slice(0, 3).map((model) => (
+                          <Badge
+                            key={model.id}
+                            variant="outline"
+                            className="text-xs"
+                          >
+                            {model.name}
+                          </Badge>
+                        ))}
+                        {filtered.length > 3 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{filtered.length - 3}
+                          </Badge>
+                        )}
+                      </div>
+                    )
+                  })()}
                 </div>
                 <div className="flex items-center gap-1 ml-4">
                   <Button
